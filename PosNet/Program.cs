@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PosNet.Automappers;
 using PosNet.DTOs;
+using PosNet.Middlewares;
 using PosNet.Models;
 using PosNet.Repository;
 using PosNet.Repository.Auth;
@@ -38,6 +39,7 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 // Validators
 builder.Services.AddScoped<IValidator<AuthDto>, RegisterValidation>();
 
+// Authentication & Authorization Configuration
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -59,6 +61,15 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+
+// Logging Configuration
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
+// Read configuration by levels from appsettings.json
+builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
+
 // Seeders
 //var roleManager = builder.Services.BuildServiceProvider().GetService<RoleManager<IdentityRole>>();
 
@@ -76,6 +87,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.MapScalarApiReference();
 }
+
+app.UseMiddleware<AuthMiddleware>();
 
 app.UseHttpsRedirection();
 

@@ -7,10 +7,12 @@ namespace PosNet.Repository.Auth
     public class AuthRepository : IAuthRepository
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<AuthRepository> _logger;
 
-        public AuthRepository(AppDbContext context)
+        public AuthRepository(AppDbContext context, ILogger<AuthRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task Register(User request)
@@ -20,7 +22,7 @@ namespace PosNet.Repository.Auth
                 await _context.Users.AddAsync(request);
             } catch(Exception error)
             {
-                Console.WriteLine($"There was an error in Auth repository: {error}");
+                _logger.LogError($"There was an error in Auth repository: {error}");
                 throw new Exception(error.Message);
             }
         }
@@ -38,7 +40,7 @@ namespace PosNet.Repository.Auth
             }
             catch (Exception error)
             {
-                Console.WriteLine($"There was an error in Auth repository: {error}");
+                _logger.LogError($"There was an error in Auth repository: {error}");
                 throw new Exception(error.Message);
             }
         }
@@ -50,7 +52,7 @@ namespace PosNet.Repository.Auth
                 return await _context.Users.FirstOrDefaultAsync(u => u.Username.ToLower() == username.ToLower());
            } catch(Exception error)
             {
-                Console.WriteLine($"There was an error in Auth repository: {error}");
+                _logger.LogError($"There was an error in Auth repository: {error}");
                 throw new Exception(error.Message);
             }
         }
@@ -64,7 +66,7 @@ namespace PosNet.Repository.Auth
             }
             catch (Exception error)
             {
-                Console.WriteLine($"There was an error in Auth repository: {error}");
+                _logger.LogError($"There was an error in Auth repository: {error}");
                 throw new Exception(error.Message);
             }
 
@@ -79,7 +81,7 @@ namespace PosNet.Repository.Auth
             }
             catch (Exception error)
             {
-                Console.WriteLine($"There was an error in Auth repository: {error}");
+                _logger.LogError($"There was an error in Auth repository: {error}");
                 throw new Exception(error.Message);
             }
         }

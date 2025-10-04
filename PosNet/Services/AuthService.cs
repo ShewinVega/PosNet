@@ -18,12 +18,18 @@ namespace PosNet.Services
         private readonly IAuthRepository _authRepository;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<AuthService> _logger;
 
-        public AuthService(IAuthRepository authRepository, IMapper mapper, IConfiguration configuration)
+        public AuthService(
+            IAuthRepository authRepository, 
+            IMapper mapper, IConfiguration configuration,
+            ILogger<AuthService> logger
+            )
         {
             _authRepository = authRepository;
             _mapper = mapper;
             _configuration = configuration;
+            _logger = logger;
         }
 
         public async Task<User?> Register(AuthDto request)
@@ -59,7 +65,7 @@ namespace PosNet.Services
 
             } catch (Exception error)
             {
-                Console.WriteLine($"There was an error in Auth services: {error}");
+                _logger.LogError($"There was an error in Auth services: {error}");
                 throw new Exception(error.Message);
             }
         }
@@ -82,7 +88,7 @@ namespace PosNet.Services
             }
             catch (Exception error)
             {
-                Console.WriteLine($"There was an error in Auth services: {error}");
+                _logger.LogError($"There was an error in Auth services: {error}");
                 throw new Exception(error.Message);
             }
         }
@@ -102,7 +108,7 @@ namespace PosNet.Services
 
             } catch(Exception error)
             {
-                Console.WriteLine($"There was an error in Auth services: {error}");
+                _logger.LogError($"There was an error in Auth services: {error}");
                 throw new Exception(error.Message);
             }
         }
@@ -141,7 +147,7 @@ namespace PosNet.Services
 
             } catch(Exception error)
             {
-                Console.WriteLine($"There was an error in Auth services: {error}");
+                _logger.LogError($"There was an error in Auth services: {error}");
                 throw new Exception(error.Message);
             }
         }
@@ -171,7 +177,7 @@ namespace PosNet.Services
             }
             catch (Exception error)
             {
-                Console.WriteLine($"There was an error in Auth services: {error}");
+                _logger.LogError($"There was an error in Auth services: {error}");
                 throw new Exception(error.Message);
             }
         }
