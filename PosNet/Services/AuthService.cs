@@ -12,18 +12,18 @@ using System.Text;
 
 namespace PosNet.Services
 {
-    public class AuthManualService : IAuthManualService
+    public class AuthService : IAuthService
     {
 
-        private readonly IAuthManualRepository _authRepository;
+        private readonly IAuthRepository _authRepository;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
-        private readonly ILogger<AuthManualService> _logger;
+        private readonly ILogger<AuthService> _logger;
 
-        public AuthManualService(
-            IAuthManualRepository authRepository, 
+        public AuthService(
+            IAuthRepository authRepository, 
             IMapper mapper, IConfiguration configuration,
-            ILogger<AuthManualService> logger
+            ILogger<AuthService> logger
             )
         {
             _authRepository = authRepository;

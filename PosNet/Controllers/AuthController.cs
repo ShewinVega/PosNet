@@ -10,7 +10,7 @@ namespace PosNet.Controllers
 {
     [Route("api/Auth")]
     [ApiController]
-    public class AuthManualController(IAuthManualService authService, IValidator<AuthDto> registerValidator, ILogger<AuthManualController> logger) : ControllerBase
+    public class AuthController(IAuthService authService, IValidator<AuthDto> registerValidator, ILogger<AuthController> logger) : ControllerBase
     {
 
 

@@ -3,7 +3,7 @@ using PosNet.Models;
 
 namespace PosNet.Services
 {
-    public interface IAuthManualService
+    public interface IAuthService
     {
         public Task<User?> Register(AuthDto request);
         public Task<TokenResponseDto?> Login(AuthDto request, User user);

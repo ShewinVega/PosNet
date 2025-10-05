@@ -28,16 +28,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 // Services
-builder.Services.AddScoped<IAuthManualService, AuthManualService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Repository
-builder.Services.AddScoped<IAuthManualRepository, AuthManualRepository>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
 // Mappers
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Validators
-builder.Services.AddScoped<IValidator<AuthDto>, RegisterManualValidation>();
+builder.Services.AddScoped<IValidator<AuthDto>, RegisterValidation>();
 
 // Authentication & Authorization Configuration
 builder.Services.AddAuthentication(options =>
