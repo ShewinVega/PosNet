@@ -3,9 +3,9 @@ using PosNet.DTOs;
 
 namespace PosNet.Validators.User
 {
-    public class RegisterValidation:AbstractValidator<AuthDto>
+    public class RegisterManualValidation:AbstractValidator<AuthDto>
     {
-        public RegisterValidation()
+        public RegisterManualValidation()
         {
             RuleFor(x => x.Username).NotEmpty().WithMessage("Username is required")
                 .MinimumLength(3).WithMessage("Username must be at least 3 characters long")

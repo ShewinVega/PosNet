@@ -4,12 +4,12 @@ using PosNet.Models;
 
 namespace PosNet.Repository.Auth
 {
-    public class AuthRepository : IAuthRepository
+    public class AuthManualRepository : IAuthManualRepository
     {
         private readonly AppDbContext _context;
-        private readonly ILogger<AuthRepository> _logger;
+        private readonly ILogger<AuthManualRepository> _logger;
 
-        public AuthRepository(AppDbContext context, ILogger<AuthRepository> logger)
+        public AuthManualRepository(AppDbContext context, ILogger<AuthManualRepository> logger)
         {
             _context = context;
             _logger = logger;

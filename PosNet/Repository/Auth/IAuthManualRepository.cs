@@ -3,7 +3,7 @@ using PosNet.Models;
 
 namespace PosNet.Repository.Auth
 {
-    public interface IAuthRepository
+    public interface IAuthManualRepository
     {
 
         public Task Register(User user);

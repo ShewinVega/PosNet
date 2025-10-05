@@ -10,7 +10,7 @@ namespace PosNet.Controllers
 {
     [Route("api/Auth")]
     [ApiController]
-    public class AuthController(IAuthService authService, IValidator<AuthDto> registerValidator, ILogger<AuthController> logger) : ControllerBase
+    public class AuthManualController(IAuthManualService authService, IValidator<AuthDto> registerValidator, ILogger<AuthManualController> logger) : ControllerBase
     {
 
 
@@ -111,7 +111,6 @@ namespace PosNet.Controllers
         {
             // get the userId
             var userId = HttpContext.Items.TryGetValue("userId", out var id) ? id : null;
-            Console.WriteLine($"ESTE ES EL ID DEL USUARIO: {userId}");
 
             return Ok("You are  an Admin");
         }
