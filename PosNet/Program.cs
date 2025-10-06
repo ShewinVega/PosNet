@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PosNet.Automappers;
+using PosNet.Constants;
 using PosNet.DTOs;
 using PosNet.Middlewares;
 using PosNet.Models;
@@ -24,7 +25,110 @@ builder.Services.AddControllers();
 // Database Context
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+        .UseSeeding((context, _) =>
+        {
+            // Seed Roles
+            var rolesExist = context.Set<Roles>().Any();
+            if (!rolesExist)
+            {
+                context.Set<Roles>().AddRange(
+                    new Roles { Name = RolesConstants.Admin },
+                    new Roles { Name = RolesConstants.User }
+                );
+
+                context.SaveChanges();
+            }
+
+
+            // Seed Permissions
+            var permissionsExist = context.Set<Permissions>().Any();
+            if (!permissionsExist)
+            {
+                context.Set<Permissions>().AddRange(
+                    new Permissions { Name = PermissionsConstants.UserRead },
+                    new Permissions { Name = PermissionsConstants.UserWrite },
+                    new Permissions { Name = PermissionsConstants.UserUpdate },
+                    new Permissions { Name = PermissionsConstants.UserDelete }
+                );
+
+                context.SaveChanges();
+            }
+
+            // Seed Role-Permission Relationships
+            var adminRole = context.Set<Roles>().FirstOrDefault(r => r.Name == RolesConstants.Admin);
+            var userRole = context.Set<Roles>().FirstOrDefault(r => r.Name == RolesConstants.User);
+
+            var readPermission = context.Set<Permissions>().FirstOrDefault(p => p.Name == PermissionsConstants.UserRead);
+            var writePermission = context.Set<Permissions>().FirstOrDefault(p => p.Name == PermissionsConstants.UserWrite);
+            var updatePermission = context.Set<Permissions>().FirstOrDefault(p => p.Name == PermissionsConstants.UserUpdate);
+            var deletePermission = context.Set<Permissions>().FirstOrDefault(p => p.Name == PermissionsConstants.UserDelete);
+
+            if (adminRole != null && userRole != null && readPermission != null && writePermission != null && updatePermission != null && deletePermission != null)
+            {
+                if (!adminRole.Permissions.Contains(readPermission))
+                    adminRole.Permissions.Add(readPermission);
+                if (!adminRole.Permissions.Contains(writePermission))
+                    adminRole.Permissions.Add(writePermission);
+                if (!adminRole.Permissions.Contains(updatePermission))
+                    adminRole.Permissions.Add(updatePermission);
+                if (!adminRole.Permissions.Contains(deletePermission))
+                    adminRole.Permissions.Add(deletePermission);
+
+                context.SaveChanges();
+            }
+        }).UseAsyncSeeding(async (context, _, CancellationToken) =>
+        {
+            // Seed Roles
+            var rolesExist = await context.Set<Roles>().AnyAsync();
+            if (!rolesExist)
+            {
+                context.Set<Roles>().AddRange(
+                    new Roles { Name = RolesConstants.Admin },
+                    new Roles { Name = RolesConstants.User }
+                );
+
+                await context.SaveChangesAsync();
+            }
+
+
+            // Seed Permissions
+            var permissionsExist = await context.Set<Permissions>().AnyAsync();
+            if (!permissionsExist)
+            {
+                context.Set<Permissions>().AddRange(
+                    new Permissions { Name = PermissionsConstants.UserRead },
+                    new Permissions { Name = PermissionsConstants.UserWrite },
+                    new Permissions { Name = PermissionsConstants.UserUpdate },
+                    new Permissions { Name = PermissionsConstants.UserDelete }
+                );
+
+                await context.SaveChangesAsync();
+            }
+
+            // Seed Role-Permission Relationships
+            var adminRole = await context.Set<Roles>().FirstOrDefaultAsync(r => r.Name == RolesConstants.Admin);
+            var userRole = await context.Set<Roles>().FirstOrDefaultAsync(r => r.Name == RolesConstants.User);
+
+            var readPermission = await context.Set<Permissions>().FirstOrDefaultAsync(p => p.Name == PermissionsConstants.UserRead);
+            var writePermission = await context.Set<Permissions>().FirstOrDefaultAsync(p => p.Name == PermissionsConstants.UserWrite);
+            var updatePermission = await context.Set<Permissions>().FirstOrDefaultAsync(p => p.Name == PermissionsConstants.UserUpdate);
+            var deletePermission = await context.Set<Permissions>().FirstOrDefaultAsync(p => p.Name == PermissionsConstants.UserDelete);
+
+            if (adminRole != null && userRole != null && readPermission != null && writePermission != null && updatePermission != null && deletePermission != null)
+            {
+                if (!adminRole.Permissions.Contains(readPermission))
+                    adminRole.Permissions.Add(readPermission);
+                if (!adminRole.Permissions.Contains(writePermission))
+                    adminRole.Permissions.Add(writePermission);
+                if (!adminRole.Permissions.Contains(updatePermission))
+                    adminRole.Permissions.Add(updatePermission);
+                if (!adminRole.Permissions.Contains(deletePermission))
+                    adminRole.Permissions.Add(deletePermission);
+
+                await context.SaveChangesAsync();
+            }
+        });
 });
 
 // Services
