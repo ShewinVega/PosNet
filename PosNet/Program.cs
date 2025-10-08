@@ -56,8 +56,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
             }
 
             // Seed Role-Permission Relationships
-            var adminRole = context.Set<Roles>().FirstOrDefault(r => r.Name == RolesConstants.Admin);
-            var userRole = context.Set<Roles>().FirstOrDefault(r => r.Name == RolesConstants.User);
+            var adminRole = context.Set<Roles>().Include(r => r.Permissions).FirstOrDefault(r => r.Name == RolesConstants.Admin);
+            var userRole = context.Set<Roles>().Include(r => r.Permissions).FirstOrDefault(r => r.Name == RolesConstants.User);
 
             var readPermission = context.Set<Permissions>().FirstOrDefault(p => p.Name == PermissionsConstants.UserRead);
             var writePermission = context.Set<Permissions>().FirstOrDefault(p => p.Name == PermissionsConstants.UserWrite);
@@ -77,6 +77,32 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
                 context.SaveChanges();
             }
+
+
+            // Seed Admin User
+            if(adminRole != null) // Here we verify that the adminRole is not null
+            {
+                var adminUserExists = context.Set<User>().Any(item => item.RoleId == adminRole.Id);
+                if (!adminUserExists)
+                {
+                    // get the user instance
+                    var newUser = new User()
+                    {
+                        Username = builder.Configuration["User:username"],
+                        PasswordHash = builder.Configuration["User:password"],
+                        RoleId = adminRole.Id
+                    };
+
+                    // Hashing Password
+                    var hashedPassword = new PasswordHasher<User>().HashPassword(newUser, newUser.PasswordHash);
+                    newUser.PasswordHash = hashedPassword;
+
+                    context.Set<User>().Add(newUser);
+
+                    context.SaveChanges();
+                }
+            }
+
         }).UseAsyncSeeding(async (context, _, CancellationToken) =>
         {
             // Seed Roles
@@ -127,6 +153,31 @@ builder.Services.AddDbContext<AppDbContext>(options =>
                     adminRole.Permissions.Add(deletePermission);
 
                 await context.SaveChangesAsync();
+            }
+
+
+            // Seed Admin User
+            if (adminRole != null) // Here we verify that the adminRole is not null
+            {
+                var adminUserExists = await context.Set<User>().AnyAsync(item => item.RoleId == adminRole.Id);
+                if (!adminUserExists)
+                {
+                    // get the user instance
+                    var newUser = new User()
+                    {
+                        Username = builder.Configuration["User:username"],
+                        PasswordHash = builder.Configuration["User:password"],
+                        RoleId = adminRole.Id
+                    };
+
+                    // Hashing Password
+                    var hashedPassword = new PasswordHasher<User>().HashPassword(newUser, newUser.PasswordHash);
+                    newUser.PasswordHash = hashedPassword;
+
+                    await context.Set<User>().AddAsync(newUser);
+
+                    await context.SaveChangesAsync();
+                }
             }
         });
 });

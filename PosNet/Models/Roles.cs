@@ -11,5 +11,7 @@ namespace PosNet.Models
         public string Name { get; set; } = string.Empty;
 
         public List<Permissions> Permissions { get; set; } = [];
+
+        public ICollection<User> Users { get; set; } = new List<User>();
     }
 }
