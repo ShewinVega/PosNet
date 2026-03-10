@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="PosNet.Api/PosNet.Api.csproj" />
+  <Project Path="PosNet.Domain/PosNet.Domain.csproj" />
+  <Project Path="PosNet.Infrastructure/PosNet.Infrastructure.csproj" />
+  <Project Path="PosNet.UseCases/PosNet.UseCases.csproj" Id="f0339a9d-203f-41e6-9913-77d602a91d56" />
+</Solution>
