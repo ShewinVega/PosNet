@@ -1,8 +1,12 @@
 # PosNet
 
-PosNet es una solución backend construida bajo el ecosistema de **.NET** (C#) cuyo objetivo central es mostrar una recopilación de buenas prácticas, arquitecturas y lecciones aprendidas de mi experiencia trabajando en diferentes proyectos.
+PosNet es una solución backend construida bajo el ecosistema de **.NET** (C#) cuyo objetivo central es mostrar una recopilación de buenas prácticas, arquitecturas y lecciones aprendidas de mi experiencia trabajando en diferentes proyectos. Actualmente
+esta en proceso, pero coinforme el tiempo pase le iré agregando mas funcionalidades, sin perder el objetivo principal que es 
+satisfacer mi curiosidad por nuevas buenas practicas y mostrar un poco de lo que he hecho en otros proyectos en los que he estado involucrado.
+
 
 Esta aplicación no es un proyecto estático; es un ecosistema vivo al cual **se le irán agregando nuevas características (features) constantemente**. Cada nueva iteración tiene el propósito de resolver un problema o demostrar un concepto de ingeniería de software con alta calidad.
+
 
 ## 🚀 Enfoque del Proyecto
 
