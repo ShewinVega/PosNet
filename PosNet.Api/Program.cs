@@ -3,7 +3,7 @@ using PosNet.UseCases;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add Infrastructure services (context, repositories)
+
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddUseCasesServices();
 builder.Services.AddProblemDetails(options =>
@@ -29,6 +29,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "v1");
+    });
 }
 
 app.UseHttpsRedirection();

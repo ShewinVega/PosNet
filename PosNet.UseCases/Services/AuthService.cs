@@ -1,8 +1,10 @@
 
 
+using FluentValidation.Results;
 using PosNet.Domain.Interfaces;
 using PosNet.UseCases.Dtos.Auth;
 using PosNet.UseCases.Interfaces;
+using PosNet.UseCases.Validators.User;
 
 namespace PosNet.UseCases.Services
 {
@@ -22,6 +24,17 @@ namespace PosNet.UseCases.Services
 
         public async Task<Result<UserDto>> Register(RegisterDto request)
         {
+
+            // Entry validations
+            var validator = new RegisterValidation();
+            ValidationResult userValidated = validator.Validate(request);
+
+            if(!userValidated.IsValid)
+            {
+                _handleError.AddValidationErrors(userValidated);
+                return Result<UserDto>.Fail();
+            }
+
             var usernameExists = await _unitOfWork.User.GetUserByName(request.Username);
             if (usernameExists != null)
             {
@@ -34,6 +47,12 @@ namespace PosNet.UseCases.Services
                 _handleError.AddError("EMAIL_ALREADY_EXIST",400, "Email");
             }
 
+            var roleExist = await _unitOfWork.Role.GetById(request.RoleId);
+            if (roleExist == null)
+            {
+                _handleError.AddError("ROLE_NOT_FOUND",404, "Role");
+            }
+
             if(_handleError.HasErrors())
             {
                 return Result<UserDto>.Fail();
@@ -41,6 +60,7 @@ namespace PosNet.UseCases.Services
 
             // Convert to Model
             var newUser = request.ToModel();
+            newUser.Role = roleExist!; // the role exist for sure
 
             // Hash Password
             var hashedPassword = _hasher.Hash(request.Password);

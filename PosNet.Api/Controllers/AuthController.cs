@@ -14,6 +14,8 @@ namespace PosNet.Api.Controllers
         private readonly IAuthService _authService = authService;
         private readonly IHandleBusinessError _handleError = handleError;
 
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto request)
         {
@@ -28,6 +30,8 @@ namespace PosNet.Api.Controllers
         }
 
 
+        [ProducesResponseType(typeof(TokenDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto request)
         {
@@ -41,6 +45,8 @@ namespace PosNet.Api.Controllers
             return Ok(result);
         }
 
+        [ProducesResponseType(typeof(TokenDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [HttpPost("refresh_token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDto request)
         {

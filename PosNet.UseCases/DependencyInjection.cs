@@ -1,9 +1,12 @@
-﻿using Mapster;
+﻿using FluentValidation;
+using Mapster;
 using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using PosNet.UseCases.Dtos.Auth;
 using PosNet.UseCases.Interfaces;
 using PosNet.UseCases.Services;
+using PosNet.UseCases.Validators.User;
 using System.Reflection;
 
 namespace PosNet.UseCases
@@ -26,6 +29,9 @@ namespace PosNet.UseCases
             config.Scan(Assembly.GetExecutingAssembly());
             services.AddSingleton(config);
             services.AddScoped<IMapper, ServiceMapper>();
+
+            // Validators
+            services.AddScoped<IValidator<RegisterDto>, RegisterValidation>();
 
             return services;
         }

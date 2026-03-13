@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PosNet.UseCases.Dtos.Auth;
 using PosNet.UseCases.Dtos.Pagination;
 using PosNet.UseCases.Interfaces;
 
@@ -12,6 +13,7 @@ namespace PosNet.Api.Controllers
         private readonly IUserService _userService = userService;
 
 
+        [ProducesResponseType(typeof(IEnumerable<UserDto>), StatusCodes.Status200OK)]
         [HttpGet("all")]
         public async Task<IActionResult> All([FromBody] PaginationDto request)
         {

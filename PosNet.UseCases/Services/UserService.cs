@@ -7,13 +7,11 @@ using PosNet.UseCases.Interfaces;
 namespace PosNet.UseCases.Services
 {
     public class UserService(
-        IUnitOfWork unitOfWork,
-        IHandleBusinessError handleBusinessError
+        IUnitOfWork unitOfWork
      ) : IUserService
     {
 
         private readonly IUnitOfWork _unitOfWork = unitOfWork;
-        private readonly IHandleBusinessError _handleError = handleBusinessError;
 
         public async Task<PaginationResponseDto<UserDto>> GetUsersPaginated(PaginationDto request)
         {

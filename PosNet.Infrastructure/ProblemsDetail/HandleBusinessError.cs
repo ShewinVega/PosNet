@@ -1,4 +1,5 @@
 ﻿
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PosNet.UseCases.Interfaces;
@@ -16,7 +17,6 @@ namespace PosNet.Infrastructure.ProblemsDetail
         private Dictionary<string, List<String>> GroupedErrors { get; set; } = [];
         private readonly List<int> status = [];
 
-
         public void AddError(string message, int code = StatusCodes.Status500InternalServerError, string? fieldName = null)
         {
             // Check if we have a field.
@@ -32,9 +32,18 @@ namespace PosNet.Infrastructure.ProblemsDetail
             GroupedErrors[key].Add(message);
         }
 
+        public void AddValidationErrors(ValidationResult validationResult)
+        {
+            Console.WriteLine(validationResult.Errors);
+            foreach (var error in validationResult.Errors)
+            {
+                AddError(error.ErrorMessage, StatusCodes.Status400BadRequest, error.PropertyName);
+            }
+        }
+
         public bool HasErrors()
         {
-            if(GroupedErrors.Count > 0) return true;
+            if(GroupedErrors.Any()) return true;
             return false;
         }
 
@@ -66,6 +75,5 @@ namespace PosNet.Infrastructure.ProblemsDetail
 
             return problemDetails;
         }
-
     }
 }

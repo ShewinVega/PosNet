@@ -17,6 +17,11 @@ namespace PosNet.Infrastructure.Repositories
             return await _context.Roles.ToListAsync();
         }
 
+        public async Task<Role?> GetById(int id)
+        {
+            return await _context.Roles.FindAsync(id);
+        }
+
         public async Task<Role?> GetRoleByName(string name)
         {
             return await _context.Roles.FirstOrDefaultAsync(r => string.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase));

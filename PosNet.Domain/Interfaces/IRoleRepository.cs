@@ -12,5 +12,6 @@ namespace PosNet.Domain.Interfaces
         Task<IEnumerable<Role>> AllRoles();
         Task<Role?> GetRoleByName(string name);
 
+        Task<Role?> GetById(int id);
     }
 }

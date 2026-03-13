@@ -1,4 +1,5 @@
 ﻿
+using PosNet.Domain.Constants;
 using PosNet.Domain.Interfaces;
 using PosNet.Infrastructure.Persistence;
 
@@ -12,6 +13,7 @@ namespace PosNet.Infrastructure.Repositories
         public IQueryable<User> GetAllUsersAsIQueryable()
         {
             return _context.Users.Include(r => r.Role)
+                .Where(r => r.Role.Name != Roles.Admin)
                 .AsNoTracking();
         }
 
