@@ -1,18 +1,20 @@
-﻿
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using PosNet.UseCases.Interfaces;
 
 namespace PosNet.Infrastructure.ProblemsDetail
 {
     public class HandleBusinessError(
         ProblemTypes problemType, 
-        IHttpContextAccessor httpContextAccessor
+        IHttpContextAccessor httpContextAccessor,
+        ProblemDetailsFactory problemDetailsFactory
         ) : IHandleBusinessError
     {
         private readonly ProblemTypes _problemType = problemType;
         private readonly HttpContext? _context = httpContextAccessor.HttpContext;
+        private readonly ProblemDetailsFactory _problemDetailsFactory = problemDetailsFactory;
 
         private Dictionary<string, List<String>> GroupedErrors { get; set; } = [];
         private readonly List<int> status = [];
@@ -61,17 +63,18 @@ namespace PosNet.Infrastructure.ProblemsDetail
             // set error type
             var errorType = _problemType.SetProblemType(status.First());
 
-            var problemDetails = new ProblemDetails
-            {
-                Type = errorType.Type,
-                Status = errorType.Code,
-                Title = "Business validation error",
-                Detail = "One or more business errors occurred.",
-                Instance = _context?.Request.Path
-            };
+
+            var problemDetails = _problemDetailsFactory.CreateProblemDetails(
+                httpContext: _context!,
+                statusCode: errorType.Code,
+                title: "Business validation error",
+                type: errorType.Type,
+                detail: "One or more business errors occurred.",
+                instance: _context?.Request.Path
+            );
+
             // Add the grouped errors to the Extensions property of ProblemDetails.
             problemDetails.Extensions["errors"] = GroupedErrors;
-            problemDetails.Extensions["traceId"] = _context?.TraceIdentifier ?? "Unknown";
 
             return problemDetails;
         }

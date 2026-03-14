@@ -6,13 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddUseCasesServices();
-builder.Services.AddProblemDetails(options =>
-{
-    options.CustomizeProblemDetails = context =>
-    {
-        context.ProblemDetails.Extensions.TryAdd("traceId", context.HttpContext.TraceIdentifier);
-    };
-});
+
 
 builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(options =>
@@ -24,6 +18,9 @@ builder.Services.AddControllers()
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -1,6 +1,7 @@
 ﻿
 using BCrypt.Net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
@@ -15,8 +16,8 @@ using PosNet.Infrastructure.ProblemsDetail;
 using PosNet.Infrastructure.Repositories;
 using PosNet.Infrastructure.Security;
 using PosNet.UseCases.Interfaces;
+using System.Diagnostics;
 using System.Text;
-using System.Text.Json.Serialization;
 
 namespace PosNet.Infrastructure
 {
@@ -62,6 +63,23 @@ namespace PosNet.Infrastructure
             services.AddScoped<IPasswordEncrypt, BCryptHasher>();
             services.AddScoped<ITokenAuthService, AuthTokenService>();
             services.Configure<JwtSettings>(configBuilder.GetSection(key: "Jwt"));
+
+            // Problem Details
+            services.AddProblemDetails(options =>
+            {
+                options.CustomizeProblemDetails = context =>
+                {
+                    context.ProblemDetails.Instance = $"{context.HttpContext.Request.Method} {context.HttpContext.Request.Path}";
+                    context.ProblemDetails.Extensions.TryAdd("requestId", context.HttpContext.TraceIdentifier);
+
+                    Activity? activity = context.HttpContext.Features.Get<IHttpActivityFeature>()?.Activity;
+                    if(activity != null)
+                    {
+                        context.ProblemDetails.Extensions.TryAdd("traceId", activity.Id);
+                    }
+                };
+            });
+
 
             // Authenticaton Configuration
             var jwt = configBuilder.GetSection(key: "Jwt").Get<JwtSettings>();
